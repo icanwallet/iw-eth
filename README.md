@@ -4,6 +4,12 @@
 
 ## use case
 
+``` javascript
+//install
+npm i iw-eth -s
+
+```
+
 ### address
 
 ``` javascript
