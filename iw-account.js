@@ -5,8 +5,8 @@ const {
 const JsonRpcProvider = require('./providers/json-rpc-provider.js')
 const Contract = require('./contracts/contract.js')
 const utils = require('./utils');
-const defalutAbi = require('./iw-abi.json');
-const iwax = require('iwax')
+const defalutAbi = require('iwcrypto/eth/abi.json');
+const {ajax, getNodeUrl, getDate, fixNumber} = require('@/iwcrypto/util.js')
 export const GASLIMIT = 150000
 /**
  * 配置信息
@@ -15,15 +15,15 @@ export let config = require('./iw-config.js')
 /**
  * 默认节点
  */
-config.nodeUrl = config.node.find(el => el.isdef == 1).url
+config.nodeUrl = getNodeUrl(config.node)
 /**
  * 获取代币的名称和decimal
  * 
  * @param {String} token
- * @return {Object} or {Boolean}
+ * @return {Object|Boolean}
  */
 export const tokenInfo = async (token) => {
-	let [err, res] = await iwax({
+	let [err, res] = await ajax({
 		url : `https://api.blockchair.com/ethereum/erc-20/tokens?q=address(${token})`
 	});
 	if (res && res.data && res.data.data && res.data.data.length > 0) {
@@ -33,10 +33,10 @@ export const tokenInfo = async (token) => {
 }
 /**
  * 获取gas详情
- * @return {Object} or {Boolean}
+ * @return {Object|Boolean}
  */
 export const getGas = async () => {
-	let [err, res] = await iwax({
+	let [err, res] = await ajax({
 		url: 'https://ethgasstation.info/json/ethgasAPI.json'
 	});
 	//console.log(res)
@@ -64,7 +64,7 @@ export const getGas = async () => {
  */
 export const getAbi = async (token) => {
 	let url = `${config.etherscan.url}?module=contract&action=getabi&address=${token}&apikey=${config.etherscan.key}`;
-	let [err, res] = await iwax({
+	let [err, res] = await ajax({
 		url
 	});
 	if (res && res.data && res.data.status > 0) {
@@ -84,17 +84,14 @@ export const getCantract = (privateKey, token, abi) => {
 	const wallet = new Wallet(privateKey, provider);
 	return new Contract(token, abi, wallet);
 }
-/**
- * 位符转换
- */
-export const fixNumber = (num, decimal) => Number(num / Math.pow(10, decimal)).toFixed(3) * 1
+
 /**
  * 获取eth或代币的余额
  * 
  * @param {String} address
  * @param {String} token
  * @param {Number} decimal
- * @return {Object} or {Boolean}
+ * @return {Object|Boolean}
  */
 export const balanceOf = async (address, token = 'eth', decimal = 18) => {
 	const provider = new JsonRpcProvider(config.nodeUrl);
@@ -114,7 +111,7 @@ export const balanceOf = async (address, token = 'eth', decimal = 18) => {
  * @param {String} token
  * @param {String} address
  * @param {Number} decimal
- * @return {Object} or {Boolean}
+ * @return {Object|Boolean} 
  */
 export const balanceOfEtherscan = async (address, token = 'eth', decimal = 18) => {
 	let url;
@@ -124,7 +121,7 @@ export const balanceOfEtherscan = async (address, token = 'eth', decimal = 18) =
 		url = `${config.etherscan.url}?module=account&action=tokenbalance&contractaddress=${token}&address=${address}&tag=latest&apikey=${config.etherscan.key}`;
 	}
 
-	let [err, res] = await iwax({url});
+	let [err, res] = await ajax({url});
 	
 	if (res && res.data && res.data.status > 0) {
 		return fixNumber(res.data.result, decimal)
@@ -174,7 +171,7 @@ export const transfer = async (privateKey, token, receiver, amount, op, decimal 
  * @param {String} token
  * @param {Number} page
  * @param {Number} pagesize
- * @return {Object} or {Boolean}
+ * @return {Object|Boolean}
  */
 export const logs = async (address, token = 'eth', page = 1, pagesize = 20) => {
 	let url;
@@ -188,7 +185,7 @@ export const logs = async (address, token = 'eth', page = 1, pagesize = 20) => {
 		//url = `${ethscanUrl}?module=account&action=tokennfttx&contractaddress=${token}&address=${address}&page=${page}&offset=${pagesize}&sort=desc&apikey=${ethscanKey}`;
 	}
 	//console.log(url)
-	let [error, rtdata] = await iwax({
+	let [error, rtdata] = await ajax({
 		url
 	})
 	if (!rtdata || !rtdata.data || !rtdata.data.result || rtdata.data.result.length < 1) return false
@@ -199,7 +196,7 @@ export const logs = async (address, token = 'eth', page = 1, pagesize = 20) => {
 		ps['token'] = token
 		ps['address'] = address
 		ps['value'] = fixNumber(ps['value'], ps['tokenDecimal'] ? ps['tokenDecimal'] : 18)
-		ps['time'] = ps['timeStamp']
+		ps['time'] = getDate(ps['timeStamp'])
 	})
 	return rs
 

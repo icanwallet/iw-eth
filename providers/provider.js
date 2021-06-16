@@ -1,5 +1,5 @@
 'use strict';
-const axios = require('iwax');
+const axios = require('iwcrypto/ajax');
 //const axios = require('../../iwax');
 var inherits = require('inherits');
 

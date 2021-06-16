@@ -17,10 +17,10 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"bugs": {
-		"url": "https://github.com/icanwallet/icanwallet/issues"
+		"url": "https://github.com/icanwallet/iw-eth/issues"
 	},
 	"dependencies": {
-		"iwcrypto": "^1.0.9"
+		"iwcrypto": "^1.1.0"
 	},
 	"author": "icanwallet",
 	"license": "ISC"

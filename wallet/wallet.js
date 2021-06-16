@@ -371,7 +371,6 @@ utils.defineProperty(Wallet, 'isEncryptedWallet', function(json) {
 });
 
 
-
 utils.defineProperty(Wallet, 'createRandom', function(options) {
     var entropy = utils.randomBytes(16);
 

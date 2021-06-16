@@ -6,6 +6,14 @@ const {
 } = require('./utils/address.js')
 const account = require('./iw-account.js')
 /**
+ * 创建助记词
+ */
+const getMnemonic = () => Wallet.createMnemonic
+/**
+ * 创建钱包
+ */
+const fromRandom = () => Wallet.createRandom
+/**
  * 从助记词获取钱包
  */
 const fromMnemonic = (mnemonic, path) => Wallet.fromMnemonic(mnemonic, path)
@@ -24,8 +32,9 @@ const isAddress = address => {
 		return false;
 	}
 }
-
 module.exports = {
+	getMnemonic,
+	fromRandom,
 	fromMnemonic,
 	fromPrivateKey,
 	isAddress,
