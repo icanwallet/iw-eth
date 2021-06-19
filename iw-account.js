@@ -94,7 +94,7 @@ export const getContract = (privateKey, token, abi) => {
  * @param {Number} decimals 代币的位数
  * 
  */
-export const deployErc20Contract = async (privateKey, total_supply = 100000000000, name = 'Tether USD', symbol = 'USDT', decimals = 6) => {
+export const deployContract = async (privateKey, total_supply = 100000000000, name = 'Tether USD', symbol = 'USDT', decimals = 6) => {
 	const provider = new providers.JsonRpcProvider(config.nodeUrl);
 	const wallet = new Wallet(privateKey, provider);
 	let factory = new ContractFactory(erc20Data.abi, erc20Data.code, wallet)

@@ -80,7 +80,7 @@ const privateKey = '0x27388b508812e27e1bf3e550d4b94c6bf2659e3978c5639702ff24d96d
  * @param {Number} decimals 代币的位数
  * 
  */
-let rt = await libs.deployErc20Contract(privateKey)
+let rt = await libs.deployContract(privateKey)
 console.log(rt)
 let  balance = await libs.balanceOf('0xA43b5A70B16d519d3d75E264446De5a29e8f14FA')
 console.log(balance)
